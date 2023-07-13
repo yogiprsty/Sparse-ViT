@@ -39,6 +39,9 @@ def train(model, checkpoint_path, train_loader, criterion, optimizer, lr_schedul
     best_loss = 1000
     model.train()
 
+    if not os.path.exists(history_path):
+        os.makedirs(history_path)
+
     with open(history_path, 'a') as history:
         history.write('epoch,loss,accuracy\n')
     
