@@ -7,6 +7,7 @@ import utils
 import model
 from train import train
 from test import test
+from prune import prune_ViT
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -48,15 +49,23 @@ lr_scheduler = torch.optim.lr_scheduler.OneCycleLR(
     pct_start=config.warmup_steps / config.train_steps,
     total_steps=config.train_steps)
 
+prune = True
+
 if __name__ == '__main__':
-    # train(vitbase16_model,
-    #       config.checkpoint_path_cifar10,
-    #       train_loader,
-    #       criterion, optimizer,
-    #       lr_scheduler, epochs,
-    #       device, config.history_path)
+    train(vitbase16_model,
+          config.checkpoint_path_cifar10,
+          train_loader,
+          criterion, optimizer,
+          lr_scheduler, epochs,
+          device, config.history_path)
     
     best_weight = torch.load(config.checkpoint_path_cifar10)
     vitbase16_model.load_state_dict(best_weight['model_state_dict'], strict=False)
     
+    test(vitbase16_model, test_loader, device)
+    
+    if prune:
+        pruned_model = prune_ViT(vitbase16_model, 0.1)
+        
+    print('Testing after prune\n')
     test(vitbase16_model, test_loader, device)
