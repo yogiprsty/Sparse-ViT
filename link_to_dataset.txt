@@ -1,0 +1,3 @@
+Link to Dataset:
+  - CIFAR-10 & CIFAR-100: https://www.cs.toronto.edu/~kriz/cifar.html
+  - ImageNet: https://www.image-net.org/download.php
